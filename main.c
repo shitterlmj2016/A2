@@ -81,7 +81,7 @@ int main(void) {
     c = getchar();
 
     if (c == 120 || c == 88) {
-        puts("exiting...");
+        puts("exiting.");
         emptyTheList(&people);
         return 0;
     }

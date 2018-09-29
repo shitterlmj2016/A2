@@ -118,6 +118,31 @@ bool replace(Item item, int index, List *plist) {
 
 }
 
+bool swap(int indexA, int indexB, List *plist){
+    int currentLength = length(plist);
+    if (currentLength - 1 < indexA||currentLength - 1 < indexB) {
+        puts("OutBounds!");
+        return false;
+    }
+    else {
+        Node *scanA = *plist;
+        Node *scanB = *plist;
+        for (int i = 0; i < indexA; i++) {
+            scanA = scanA->next;
+        }
+        for (int i = 0; i < indexB; i++) {
+            scanB = scanB->next;
+        }
+        Item itemA= scanA->item;
+        scanA->item=scanB->item;
+        scanB->item=itemA;
+        return true;
+
+    }
+
+
+}
+
 
 bool deleteFirst(char lastname[], List *plist) {
     int index;
@@ -130,13 +155,15 @@ bool deleteFirst(char lastname[], List *plist) {
 }
 
 
-bool deleteAny(char lastname[], List *plist) {
+int deleteAny(char lastname[], List *plist) {
+    int deletCount=0;
     int index;
     while ((index = searchFirstName(lastname, plist)) >= 0) {
 //      puts("found");
         deleteAt(index, plist);
+        ++deletCount;
     };
-    return true;
+    return deletCount;
 }
 
 
@@ -214,7 +241,16 @@ int *searchAllBirth(char birthday[], List *plist) {
 
 }
 
-
+Node *getNode(int index, List *plist){
+    int len=length(plist);
+    if(index>len-1)
+        return NULL;
+    Node *scan = *plist;
+    for (int i = 0; i < index; i++) {
+        scan = scan->next;
+    }
+    return scan;
+}
 
 int countByName(char lastname[], List *plist) {
     Node *scan = *plist;

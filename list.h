@@ -46,13 +46,17 @@ bool deleteAt(int index, List *plist);
 
 bool deleteFirst(char lastname[], List *plist);
 
-bool deleteAny(char lastname[], List *plist);
+int deleteAny(char lastname[], List *plist);
 
 bool replace(Item item, int index, List *plist);
+
+bool swap(int indexA, int indexB, List *plist);
 
 int countByName(char lastname[], List *plist);
 
 int countByBirth(char birthday[], List *plist);
+
+Node *getNode(int index, List *plist);
 
 int searchFirstName(char lastname[], List *plist);
 

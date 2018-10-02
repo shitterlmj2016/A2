@@ -1,38 +1,57 @@
-//
-// Created by xchuang1995 on 2018/9/26.
-//
+/*****************************************************************************************************
+* File: list.c
+* Course: Data Structures and Algorithms for Engineers
+* Project: A2
+* Author: Xincheng Huang
+* Copyright: Copyright (c) 2018 Carnegie Mellon University
+* Versions:
+*	1.0 September 2018
+*
+* Description:
+* This file clarifies all functions defined in list.h
+*
+* Compilation and Execution Instructions:
+*
+* 	Compiler: gcc
+*	Operating System: Windows 7, 8. 10 MacOS
+*	Special Libraries: none
+* 	Execution Environment: Windows Comand Line, MacOS Command Line, Unix Command Line
+*
+* Parameters: None
+*
+*****************************************************************************************************/
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include "list.h"
 
-//*plist是头节点
 
-static void CopyToNode(Item item, Node *pnode) // 拷贝数据
+
+static void CopyToNode(Item item, Node *pnode) // Copy the data (which in this case is a person) to an node
 {
     pnode->item = item;
 }
 
-void initList(List *plist) // 初始化链表为空
+void initList(List *plist) //Initiates the list.
 {
     *plist = NULL;
 }
 
-bool listIsEmpty(const List *plist)  // 检查链表是否为空
+bool listIsEmpty(const List *plist)  //Checks if the list is empty.
 {
     return *plist == NULL ? true : false;
 }
 
-bool listIsFull(const List *plist)  // 检查链表是否已满
+bool listIsFull(const List *plist)  //Checks if the list is full.
 {
     Node *pt;
     pt = (Node *) malloc(sizeof(Node));
-    return pt == NULL ? true : false;
+    return pt == NULL ? true : false; //Check if the memory has been used up.
 }
 
-unsigned int length(const List *plist) {
-    unsigned int count = 0;
-    Node *pnode = *plist;
+unsigned int length(const List *plist) { //Calculates the size of the list.
+    unsigned int count = 0; //Sets a counter
+    Node *pnode = *plist; //Traverses the list
     while (pnode != NULL) {
         ++count;
         pnode = pnode->next;
@@ -40,24 +59,26 @@ unsigned int length(const List *plist) {
     return count;
 }
 
-bool insert(Item item, int index, List *plist) {
-    int currentLength = length(plist);
+bool insert(Item item, int index, List *plist) { // Inserts an element at any specified position number.
+    int currentLength = length(plist); // Checks if the input number is legal.
     if (currentLength < index) {
         puts("OutBounds!");
-        return false;
+        return false; // Illegal
     } else {
         Node *pnew;
         Node *scan = *plist;
-        pnew = (Node *) malloc(sizeof(Node)); // 给新节点申请空间
-        if (pnew == NULL) return false; // 申请失败，返回false
-        CopyToNode(item, pnew);
+        pnew = (Node *) malloc(sizeof(Node)); // Allocate a new node
+        if (pnew == NULL) return false; // Allocation failed
+        CopyToNode(item, pnew); //Allocation successful
 
+        //Case 1: Insert this node to the head of the list
         if (index == 0) {
             pnew->next = *plist;
             *plist = pnew;
             return true;
         }
 
+        //Case 2: Insert this node between other nodes or at the tail
         for (int i = 0; i < index - 1; i++) {
             scan = scan->next;
         }
@@ -70,13 +91,15 @@ bool insert(Item item, int index, List *plist) {
 
 }
 
+//Deletes the element at position number i.
 bool deleteAt(int index, List *plist) {
+    // Checks if the input number is legal.
     int currentLength = length(plist);
     if (currentLength < index) {
         puts("OutBounds!");
         return false;
     } else {
-
+        //Case1: Delete the first node
         if (index == 0) {
             Node *temp = *plist;
             temp = temp->next;
@@ -85,6 +108,7 @@ bool deleteAt(int index, List *plist) {
             return true;
         }
 
+        //Case2: Delete other nodes
         Node *scan = *plist;
         for (int i = 0; i < index - 1; i++) {
             scan = scan->next;
@@ -101,16 +125,20 @@ bool deleteAt(int index, List *plist) {
 }
 
 
+//Replaces the data in the element at position i with a new data record.
 bool replace(Item item, int index, List *plist) {
+    //Check if the input number is legal
     int currentLength = length(plist);
     if (currentLength - 1 < index) {
         puts("OutBounds!");
         return false;
     } else {
+        //Search for the node
         Node *scan = *plist;
         for (int i = 0; i < index; i++) {
             scan = scan->next;
         }
+        //Modify its content
         scan->item = item;
         return true;
 
@@ -118,13 +146,15 @@ bool replace(Item item, int index, List *plist) {
 
 }
 
-bool swap(int indexA, int indexB, List *plist){
+//Swaps two elements at ant specified numbers.
+bool swap(int indexA, int indexB, List *plist) {
     int currentLength = length(plist);
-    if (currentLength - 1 < indexA||currentLength - 1 < indexB) {
+    //Check if the input number is legal
+    if (currentLength - 1 < indexA || currentLength - 1 < indexB) {
         puts("OutBounds!");
         return false;
-    }
-    else {
+    } else {
+        //Find these two nodes based on given positions
         Node *scanA = *plist;
         Node *scanB = *plist;
         for (int i = 0; i < indexA; i++) {
@@ -133,9 +163,10 @@ bool swap(int indexA, int indexB, List *plist){
         for (int i = 0; i < indexB; i++) {
             scanB = scanB->next;
         }
-        Item itemA= scanA->item;
-        scanA->item=scanB->item;
-        scanB->item=itemA;
+        //Swap their contents
+        Item itemA = scanA->item;
+        scanA->item = scanB->item;
+        scanB->item = itemA;
         return true;
 
     }
@@ -143,96 +174,108 @@ bool swap(int indexA, int indexB, List *plist){
 
 }
 
-
+//Deletes the first occurrence of element that has the specified Last Name.
 bool deleteFirst(char lastname[], List *plist) {
     int index;
+    //Seatch for its position
     if ((index = searchFirstName(lastname, plist)) < 0) {
-//        puts("not found!\n");
+        //Not found
         return false;
     }
+    //Found, then delete it.
     deleteAt(index, plist);
     return true;
 }
 
-
+//Deletes any elements that have the specified Last Name.
+//Returns the total number of deleted items, could be zero.
 int deleteAny(char lastname[], List *plist) {
-    int deletCount=0;
+    int deletCount = 0;
     int index;
+    //Keep deleting until there's no such item left/
     while ((index = searchFirstName(lastname, plist)) >= 0) {
-//      puts("found");
-        deleteAt(index, plist);
+    deleteAt(index, plist);
         ++deletCount;
     };
     return deletCount;
 }
 
-
+//Deletes any elements that have the specified Last Name.
+//If found, returns its position.
+//If not found returns -1.
 int searchFirstName(char lastname[], List *plist) {
     Node *scan = *plist;
     int currentLength = length(plist);
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(lastname, scan->item.lastName) == 0) {
-//            puts("found!");
             return i;
         }
         scan = scan->next;
     }
-//    puts("not found!\n");
     return -1;
-
 }
 
+//Searches for the specified Birthday in the list.
+//If found, returns its position.
+//If not found returns -1.
 int searchFirstBirth(char birthday[], List *plist) {
     Node *scan = *plist;
     int currentLength = length(plist);
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(birthday, scan->item.birthday) == 0) {
-//            puts("found!");
             return i;
         }
         scan = scan->next;
     }
-//    puts("not found!\n");
     return -1;
-
 }
 
 
-//数组第一个元素是数组的长度
+//Searches for all occurrences of the specified Last Name.
+//Then stores their indexes in an array.
+//The first position od the array stores the total number of qualified people, could be zero.
 int *searchAllName(char lastname[], List *plist) {
-    int count=countByName(lastname,plist);
-
-    if(count==0) return NULL;
-
+    int count = countByName(lastname, plist);
+    //Traverses the list to counts how many people are qualified
+    if (count == 0) return NULL;
+    //Initialize the return array.
     int *returnArr;
-    int arrIndex=1;
-    returnArr=(int*)malloc(sizeof(int)*(count+1));
-    returnArr[0]=count;
+    int arrIndex = 1;
+    //Put the number of the qualified people at the first position of the array
+    returnArr = (int *) malloc(sizeof(int) * (count + 1));
+    returnArr[0] = count;
     Node *scan = *plist;
     int currentLength = length(plist);
+    //Traverses again to add qualified people into the return array
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(lastname, scan->item.lastName) == 0) {
-            returnArr[arrIndex]=i;
+            returnArr[arrIndex] = i;
             ++arrIndex;
         }
         scan = scan->next;
     }
+    //Return the pointer of the array.
     return returnArr;
 
 }
 
+//Searches for all occurrences of the specified birthday.
+//Then stores their indexes in an array.
+//The first position od the array stores the total number of qualified people, could be zero.
+//It's basically the same compared to the fuction searchAllName.
+//The only difference is that this function compares date rather than the name.
 int *searchAllBirth(char birthday[], List *plist) {
-    int count=countByBirth(birthday,plist);
-    if(count==0) return NULL;
+    int count = countByBirth(birthday, plist);
+    if (count == 0) return NULL;
     int *returnArr;
-    int arrIndex=1;
-    returnArr=(int*)malloc(sizeof(int)*(count+1));
-    returnArr[0]=count;
+    int arrIndex = 1;
+    returnArr = (int *) malloc(sizeof(int) * (count + 1));
+    returnArr[0] = count;
     Node *scan = *plist;
     int currentLength = length(plist);
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(birthday, scan->item.birthday) == 0) {
-            returnArr[arrIndex]=i;
+            returnArr[arrIndex] = i;
             ++arrIndex;
         }
         scan = scan->next;
@@ -241,21 +284,26 @@ int *searchAllBirth(char birthday[], List *plist) {
 
 }
 
-Node *getNode(int index, List *plist){
-    int len=length(plist);
-    if(index>len-1)
+//Return the pointer to the node based on given index
+Node *getNode(int index, List *plist) {
+    int len = length(plist);
+    //Check if the input index is legal
+    if (index > len - 1)
         return NULL;
     Node *scan = *plist;
+    //Traverse
     for (int i = 0; i < index; i++) {
         scan = scan->next;
     }
     return scan;
 }
 
+//Counts how many people are there having the same lastname
 int countByName(char lastname[], List *plist) {
     Node *scan = *plist;
     int count = 0;
     int currentLength = length(plist);
+    //Traverse stuff
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(lastname, scan->item.lastName) == 0) {
             ++count;
@@ -267,7 +315,7 @@ int countByName(char lastname[], List *plist) {
 
 }
 
-
+//Counts how many people are there having the same birthday
 int countByBirth(char birthday[], List *plist) {
     Node *scan = *plist;
     int count = 0;
@@ -283,41 +331,39 @@ int countByBirth(char birthday[], List *plist) {
 
 }
 
-
-
-
-bool append(Item item, List *plist) // 在链表结尾添加新的项
+//Appends a node to the tail of the linked list
+bool append(Item item, List *plist)
 {
-    Node *pnew; // 申请一个新的节点
+    Node *pnew; // Declare a new node
     Node *scan = *plist;
-    pnew = (Node *) malloc(sizeof(Node)); // 给新节点申请空间
-    if (pnew == NULL) return false; // 申请失败，返回false
-    CopyToNode(item, pnew); // 把item的内容复制到新节点中
-    pnew->next = NULL; // 将新节点的next指针设置为NULL，表示这一节点为当前的末尾项
-    if (scan == NULL) // 如果当前是空表，则将新节点设置为表的首项
+    pnew = (Node *) malloc(sizeof(Node)); // Allocate memory for this new node
+    if (pnew == NULL) return false; // Allocation failed
+    CopyToNode(item, pnew); // Copy the item into the node
+    pnew->next = NULL; // Set the pointer to the next node to null, meaning this is the tail node.
+    if (scan == NULL) // If its an empty list, set it as the head node
         *plist = pnew;
     else {
-        while (scan->next != NULL) //找到当前表中的末尾节点
+        while (scan->next != NULL) //Search for the tail of current list
             scan = scan->next;
-        scan->next = pnew; //将新节点的地址保存在末尾节点的next成员里（即给链表添加了一个新的项）
+        scan->next = pnew; //Hook the new node to the old tail node.
     }
     return true;
 }
 
-void traverse(const List *plist, void(*pfun)(Item item)) // 将某函数作用于链表的每一节点
+void traverse(const List *plist, void(*pfun)(Item item)) // Put an function on each node from the list
 {
-    Node *pnode = *plist; // 将节点指向开头
+    Node *pnode = *plist; // Put a pointer to the head node
     while (pnode != NULL) {
         (*pfun)(pnode->item);
         pnode = pnode->next;
     }
 }
 
-void emptyTheList(List *plist) // 清空链表
+void emptyTheList(List *plist) // Free the list
 {
-    Node *psave; // 用来保存当前清除项的下一节点的地址
+    Node *psave; // Free the entire list FIFO
     while (*plist != NULL) {
-        psave = (*plist)->next;
+        psave = (*plist)->next;//Store the next node(if exists)
         free(*plist);
         *plist = psave;
     }

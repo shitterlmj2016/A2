@@ -76,7 +76,7 @@ bool deleteFirst(char lastname[], List *plist); //Deletes the first occurrence o
 
 int deleteAny(char lastname[], List *plist); //Deletes any elements that have the specified Last Name.
 
-bool replace(Item item, int index, List *plist); //Replaces the data in the element at position i with a new data reord.
+bool replace(Item item, int index, List *plist); //Replaces the data in the element at position i with a new data record.
 
 bool swap(int indexA, int indexB, List *plist); //Swaps two elements at ant specified numbers.
 

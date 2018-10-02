@@ -19,11 +19,6 @@
 *
 * Parameters: None
 *
-* Internal Functions:
-*						void FillIt(long array, int s): Fills the array with a fibonacci series.
-*						void PrintIt(long array, int s): Prints the contents of the array to the
-*														 console.
-*
 *****************************************************************************************************/
 
 #ifndef A2_CORE_LIST_H

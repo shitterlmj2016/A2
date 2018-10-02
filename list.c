@@ -95,7 +95,7 @@ bool insert(Item item, int index, List *plist) { // Inserts an element at any sp
 bool deleteAt(int index, List *plist) {
     // Checks if the input number is legal.
     int currentLength = length(plist);
-    if (currentLength < index) {
+    if (currentLength < index||index<0) {
         puts("OutBounds!");
         return false;
     } else {
@@ -237,7 +237,6 @@ int searchFirstBirth(char birthday[], List *plist) {
 int *searchAllName(char lastname[], List *plist) {
     int count = countByName(lastname, plist);
     //Traverses the list to counts how many people are qualified
-    if (count == 0) return NULL;
     //Initialize the return array.
     int *returnArr;
     int arrIndex = 1;
@@ -265,17 +264,16 @@ int *searchAllName(char lastname[], List *plist) {
 //It's basically the same compared to the fuction searchAllName.
 //The only difference is that this function compares date rather than the name.
 int *searchAllBirth(char birthday[], List *plist) {
-    int count = countByBirth(birthday, plist);
-    if (count == 0) return NULL;
+    int count=countByBirth(birthday,plist);
     int *returnArr;
-    int arrIndex = 1;
-    returnArr = (int *) malloc(sizeof(int) * (count + 1));
-    returnArr[0] = count;
+    int arrIndex=1;
+    returnArr=(int*)malloc(sizeof(int)*(count+1));
+    returnArr[0]=count;
     Node *scan = *plist;
     int currentLength = length(plist);
     for (int i = 0; i < currentLength; i++) {
         if (strcmp(birthday, scan->item.birthday) == 0) {
-            returnArr[arrIndex] = i;
+            returnArr[arrIndex]=i;
             ++arrIndex;
         }
         scan = scan->next;
@@ -326,7 +324,6 @@ int countByBirth(char birthday[], List *plist) {
         }
         scan = scan->next;
     }
-
     return count;
 
 }

@@ -4,26 +4,8 @@
 #include "list.h"
 
 void showPeople(Item item);
-
-char *s_gets(char *st, int n);
-
 void showPeople(Item item) {
-    printf("firstname: %s lastname:%s birthday:%s\n", item.firstName, item.lastName, item.birthday);
-}
-
-char *s_gets(char *st, int n) {
-    char *ret_val;
-    char *find;
-    ret_val = fgets(st, n, stdin);
-    if (ret_val) {
-        find = strchr(st, '\n');
-        if (find)
-            *find = '\0';
-        else
-            while (getchar() != '\n')
-                continue;
-    }
-    return ret_val;
+    printf("Firstname: %s Lastname:%s Birthday:%s\n", item.firstName, item.lastName, item.birthday);
 }
 
 int main(void) {
@@ -96,14 +78,16 @@ int main(void) {
     label1:{
     char buf[NSIZE];
     FILE *fp;
-    puts("Please input the file address");
+    puts("Please input the file address using the following format:");
+    puts("C:\\Users\\xchuang1995\\Desktop\\io.txt");
+    puts("Now type in your file address:");
     char address[255];
     scanf("%s", address);
-    //"C:\\Users\\xchuang1995\\Desktop\\io.txt";
     int len;
     if((fp = fopen(address,"r")) == NULL)
-    { perror("fail to read");
-        exit (1) ;
+    { perror("Fail to read!");
+        puts("Please enter a correct file path!");
+        goto label1 ;
     }
     while(fgets(buf,NSIZE,fp) != NULL)
     {   Item new;
@@ -120,33 +104,32 @@ int main(void) {
         len = strlen(buf);
         buf[len-1] = '\0';
         strcpy(new.birthday,buf);
-
         append(new,&people);
     }
+    puts("Import successful!");
+    printf("Here's your list at present:\n");
+    traverse(&people, showPeople);
+    printf("Returning to main menu...\n");
     goto label0;
     }
-
-
-
-
-
-
-
-
-
-
-
 
 
     label2:
     {
         Item tempp;
-        puts("Enter first name:");
-        scanf("%s", &tempp.firstName);
-        puts("Enter last name:");
-        scanf("%s", &tempp.lastName);
-        puts("Enter brithday:");
-        scanf("%s", &tempp.birthday);
+        puts("Please enter the first name, the last name and the birthday in order.");
+        puts("Notice that the first name and the last name shall be no longer than 50 characters!");
+        puts("Now enter the first name(Less than 50 characters):");
+
+        scanf("%50s", &tempp.firstName);
+        scanf("%*[^\n]"); scanf("%*c");//Clean the buff
+        puts("Now enter the last name(Less than 50 characters):");
+
+        scanf("%50s", &tempp.lastName);
+        puts("Now enter the brithday by MM-DD-YYYY:");
+        scanf("%*[^\n]"); scanf("%*c");//Clean the buff
+        scanf("%10s", &tempp.birthday);
+        scanf("%*[^\n]"); scanf("%*c");//Clean the buff
 
         if (append(tempp, &people) == false) {
             fprintf(stderr, "Problem allocating memory\n");
@@ -156,8 +139,7 @@ int main(void) {
             puts("The list is now full.\n");
         }
 
-        puts("Press x to return");
-        puts("Press other key to continue");
+        puts("Enter x to return, enter other things to continue");
 
         char buf1[255];
         scanf("%s", buf1);
@@ -168,7 +150,6 @@ int main(void) {
             } else {
                 printf("Here is the people list:\n");
                 traverse(&people, showPeople);
-                printf("You entered %d people.\n", length(&people));
                 printf("Returning to main menu...\n");
             }
             goto label0;
@@ -182,9 +163,9 @@ int main(void) {
     label3:
     {
         if (listIsEmpty(&people))
-            printf("Empty list.\n");
+            printf("The list is empty.\n");
         else {
-            printf("Here is the list:\n");
+            printf("Showing the list:\n");
             traverse(&people, showPeople);
             printf("There are %d people in total.\n", length(&people));
         }
